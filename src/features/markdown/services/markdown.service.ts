@@ -1,9 +1,9 @@
 import { DB_CONNECT } from '../constant/markdown.contant';
-import markdownIndexedDBService from './markdown.indexdb.service';
 
+type DBType = keyof typeof DB_CONNECT;
 const markdownService = (dbType: string) => {
   if (dbType in DB_CONNECT) {
-    return markdownIndexedDBService;
+    return DB_CONNECT[dbType as DBType];
   }
 
   window.alert('Invalid database type. Please choose either IndexDB or LocalStorage.');

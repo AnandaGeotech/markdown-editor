@@ -1,12 +1,12 @@
 import { useEffect, useState } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
-import { DB_TYPE_NAME } from '../constant/markdown.contant';
-import { useItemContext } from '@/common/contexts/markdown.context';
+import { SELECTED_SERVICE_TYPE } from '../constant/markdown.contant';
+import { useItemContext, validateMarkdown } from '@/common/contexts/markdown.context';
 import { useToast } from '@/common/hooks/use-toast';
 
 import markdownService from '@/features/markdown/services/markdown.service';
 
-const { getSingleFileDataFn } = markdownService(DB_TYPE_NAME);
+const { getSingleFileDataFn } = markdownService(SELECTED_SERVICE_TYPE);
 
 const useMarkdownUpsert = () => {
   const navigate = useNavigate();
@@ -15,7 +15,9 @@ const useMarkdownUpsert = () => {
   const { toast } = useToast();
   const {
     setToglleInput, settextFile, setfileName,
+    customErrors, setcustomErrors,
   } = useItemContext();
+
   async function getFileDataFn(fileId:string) {
     try {
       const data = await getSingleFileDataFn(fileId);
@@ -50,11 +52,19 @@ const useMarkdownUpsert = () => {
   const [showMobileEditor, setshowMobileEditor] = useState(true);
 
   const isFileNotFound = search.includes('file-not-found');
+  function handleChangeMarkdownFn(e: React.ChangeEvent<HTMLTextAreaElement>) {
+    // setcustomErrors({});
+    settextFile(e.target.value);
+    // const errors = validateMarkdown(e.target.value);
+    // setcustomErrors(errors);
+  }
 
   return {
     showMobileEditor,
     setshowMobileEditor,
     isFileNotFound,
+    validateMarkdown,
+    handleChangeMarkdownFn,
   };
 };
 
