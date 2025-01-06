@@ -133,7 +133,7 @@ export const ItemProvider: FC<ItemProviderProps> = ({ children }) => {
         title: `File is ${fileId ? 'updated' : 'added'} successfully!`,
       });
 
-      navigate(`/markdown/markdown-edit/${resData}`, { replace: true });
+      navigate(`/markdown/markdown-edit/${resData?.id}`, { replace: true });
     } catch (error: any) {
       toast({
         title: error?.message || 'Something went wrong!',

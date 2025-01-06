@@ -1,16 +1,17 @@
+import { IMarkdownJsonApiDBService } from '../type/markdown.type';
 import {
   addDataToLocalStorage,
   deleteDataFromLocalStorage,
   getAllDataFromLocalStorage,
   getDataFromLocalStorageById,
 } from '@/lib/db';
-import { FileInfo } from '@/types/file.type';
+import { FileInfo, IFileListRes } from '@/types/file.type';
 
 async function getSingleFileDataFn(fileId: string): Promise<FileInfo | undefined> {
   return getDataFromLocalStorageById(fileId);
 }
 
-async function getAllDataFromDBFn(): Promise<FileInfo[]> {
+async function getAllDataFromDBFn(): Promise<IFileListRes > {
   return getAllDataFromLocalStorage();
 }
 
@@ -21,7 +22,7 @@ async function deleteDataFromDBFn(id: string) {
 async function upsertDataToDBFn(payload: FileInfo) {
   return addDataToLocalStorage(payload);
 }
-const markdownLocalStorageService = {
+const markdownLocalStorageService : IMarkdownJsonApiDBService = {
 
   getSingleFileDataFn,
   getAllDataFromDBFn,
