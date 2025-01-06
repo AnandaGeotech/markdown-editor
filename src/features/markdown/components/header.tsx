@@ -9,12 +9,12 @@ import {
 } from 'react-router-dom';
 import { Button } from '@/common/components/button';
 import { useToast } from '@/common/hooks/use-toast';
-import { DB_TYPE_NAME } from '@/features/markdown/constant/markdown.contant';
+import { SELECTED_SERVICE_TYPE } from '@/features/markdown/constant/markdown.contant';
 import markdownService from '@/features/markdown/services/markdown.service';
 import { useItemContext } from '@/common/contexts/markdown.context';
 import { ConfirmModal } from '@/common/components/confirm-modal';
 
-const { deleteDataFromDBFn } = markdownService(DB_TYPE_NAME);
+const { deleteDataFromDBFn } = markdownService(SELECTED_SERVICE_TYPE);
 
 export default function MarkdownHeader() {
   const { id: editFileId } = useParams();

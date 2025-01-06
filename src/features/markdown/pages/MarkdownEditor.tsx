@@ -13,10 +13,11 @@ import {
 } from '@/common/components/resizable';
 
 const MarkdownEditor: FC = () => {
-  const { textFile, settextFile } = useItemContext();
+  const { textFile } = useItemContext();
 
   const {
     showMobileEditor, setshowMobileEditor, isFileNotFound,
+    handleChangeMarkdownFn,
   } = useMarkdownUpsert();
 
   const PreviewEyeIcon = !showMobileEditor ? EyeIcon : EyeOff;
@@ -54,7 +55,7 @@ const MarkdownEditor: FC = () => {
                 disabled={isFileNotFound}
                 className="p-4 w-full h-[99%] bg-black text-[#c0c1c6] focus:outline-none resize-none overflow-auto scrollbar-none"
                 value={textFile}
-                onChange={(e) => settextFile(e.target.value)}
+                onChange={handleChangeMarkdownFn}
               />
 
             </div>
@@ -103,7 +104,7 @@ const MarkdownEditor: FC = () => {
                   disabled={isFileNotFound}
                   className="p-4 w-full h-[99%] bg-black text-[#c0c1c6] focus:outline-none resize-none overflow-auto scrollbar-none"
                   value={textFile}
-                  onChange={(e) => settextFile(e.target.value)}
+                  onChange={handleChangeMarkdownFn}
                 />
               )}
             </div>
