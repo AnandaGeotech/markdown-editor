@@ -1,3 +1,5 @@
+/* eslint-disable no-plusplus */
+/* eslint-disable no-unused-vars */
 import React from 'react';
 import {
   Pagination as ShadcnPagination,
@@ -9,22 +11,20 @@ import {
   PaginationPrevious,
 } from '@/common/components/pagination';
 
-interface PaginationProps {
+export interface PaginationProps {
   totalPages: number;
   currentPage: number;
   onPageChange?: (page: number) => void;
-  setCurrentPage: (page: number) => void;
 }
 
 const CustomPagination: React.FC<PaginationProps> = ({
   totalPages,
   currentPage,
   onPageChange,
-  setCurrentPage,
 }) => {
   const handlePageChange = (page: number) => {
     if (page < 1 || page > totalPages) return;
-    setCurrentPage(page);
+
     onPageChange?.(page);
   };
 

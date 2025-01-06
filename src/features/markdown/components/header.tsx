@@ -3,7 +3,7 @@ import {
   Menu,
   Trash2Icon,
 } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import {
   Link, useLocation, useNavigate, useParams,
 } from 'react-router-dom';
@@ -59,7 +59,7 @@ export default function MarkdownHeader() {
       handleDelete(editFileId);
     }
   }
-
+  const inputRef = useRef<HTMLInputElement>(null);
   return (
     <>
       <header className="h-[80px] relative bg-[#2c2d31] text-white p-4 flex justify-between items-center">
@@ -81,8 +81,14 @@ export default function MarkdownHeader() {
                 <div className="flex items-center gap-1">
                   {toggleInput ? (
                     <p
-                      onDoubleClick={() => setToglleInput(false)}
-                      onTouchEnd={() => setToglleInput(false)}
+                      onDoubleClick={() => {
+                        setToglleInput(false);
+                        inputRef.current.focus();
+                      }}
+                      onTouchEnd={() => {
+                        setToglleInput(false);
+                        inputRef.current.focus();
+                      }}
                       className="text-sm text-[#f2f3f7]"
                     >
                       {fileName}
@@ -95,6 +101,7 @@ export default function MarkdownHeader() {
                       onChange={(e) => setfileName(e.target.value.trim())}
                       type="text"
                       className="block w-full p-2 text-gray-900 border border-gray-300 rounded-lg bg-gray-50 text-xs focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                      ref={inputRef}
                     />
                   )}
 
