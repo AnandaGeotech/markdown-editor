@@ -1,4 +1,3 @@
-import MarkdownIt from 'markdown-it';
 import {
   addDataToIndexedDB,
   deleteDataFromIndexedDB,

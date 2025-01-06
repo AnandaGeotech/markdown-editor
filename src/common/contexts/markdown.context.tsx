@@ -11,14 +11,9 @@ import { useNavigate } from 'react-router-dom';
 import { useToast } from '@/common/hooks/use-toast';
 import markdownService from '@/features/markdown/services/markdown.service';
 import { DB_TYPE_NAME } from '@/features/markdown/constant/markdown.contant';
+import { FileInfo } from '@/types/file.type';
 
 const { upsertDataToDBFn } = markdownService(DB_TYPE_NAME);
-
-interface Item {
-  id: number;
-  name: string;
-  textFile: string;
-}
 
 interface ItemContextProps {
   toggleInput: boolean;
@@ -27,7 +22,7 @@ interface ItemContextProps {
   setfileName: Dispatch<SetStateAction<string>>;
   handleFileUpsertFn: (
     // eslint-disable-next-line no-unused-vars
-    data: Partial<Item> & { fileId?: string }
+    data: Partial<FileInfo> & { fileId?: string }
   ) => Promise<void>;
   textFile: string;
   settextFile: Dispatch<SetStateAction<string>>;

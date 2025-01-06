@@ -14,7 +14,7 @@ const useMarkdownUpsert = () => {
   const { id: editFileId } = useParams();
   const { toast } = useToast();
   const {
-    setToglleInput, fileName, textFile, settextFile, setfileName,
+    setToglleInput, settextFile, setfileName,
   } = useItemContext();
   async function getFileDataFn(fileId:string) {
     try {
@@ -48,12 +48,11 @@ const useMarkdownUpsert = () => {
   }, [editFileId, setToglleInput, setfileName, settextFile]);
 
   const [showMobileEditor, setshowMobileEditor] = useState(true);
-  const [isCopy, setisCopy] = useState(false);
+
   const isFileNotFound = search.includes('file-not-found');
 
   return {
     showMobileEditor,
-    isCopy,
     setshowMobileEditor,
     isFileNotFound,
   };
