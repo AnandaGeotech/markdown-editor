@@ -98,7 +98,7 @@ export const clearStoreInLocalStorage = (): void => {
 };
 
 // Add or update data in localStorage
-export const addDataToLocalStorage = async (data:IFileUpsert): Promise<IFileCreate> => {
+export const addDataToLocalStorage = async (data:IFileUpsert): Promise<IFileInfo> => {
   const { data: existingData } = await getDataFromLocalStorage();
 
   if (data.id) {
@@ -143,7 +143,7 @@ export const deleteDataFromLocalStorage = async (id: string): Promise<void> => {
 const API_BASE_URL = 'http://localhost:3000'; // Replace with your actual base URL
 
 // Add data to the API server
-export const addDataToApiServer = async (data: IFileCreate): Promise<IFileCreate> => {
+export const addDataToApiServer = async (data: IFileUpsert): Promise<IFileInfo> => {
   const response = await fetch(`${API_BASE_URL}/files`, {
     method: 'POST',
     headers: {
