@@ -10,12 +10,7 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from '@/common/components/pagination';
-
-export interface PaginationProps {
-  totalPages: number;
-  currentPage: number;
-  onPageChange?: (page: number) => void;
-}
+import { PaginationProps } from '@/types/common.type';
 
 const CustomPagination: React.FC<PaginationProps> = ({
   totalPages,
@@ -36,6 +31,7 @@ const CustomPagination: React.FC<PaginationProps> = ({
       links.push(
         <PaginationItem key={i}>
           <PaginationLink
+            size=""
             href="#"
             isActive={currentPage === i}
             onClick={(e) => {
@@ -67,6 +63,7 @@ const CustomPagination: React.FC<PaginationProps> = ({
         <PaginationItem key={i}>
           <PaginationLink
             href="#"
+            size=""
             isActive={currentPage === i}
             onClick={(e) => {
               e.preventDefault();
@@ -95,6 +92,7 @@ const CustomPagination: React.FC<PaginationProps> = ({
           <PaginationItem key={i}>
             <PaginationLink
               href="#"
+              size=""
               isActive={currentPage === i}
               onClick={(e) => {
                 e.preventDefault();
@@ -116,6 +114,7 @@ const CustomPagination: React.FC<PaginationProps> = ({
       <PaginationContent>
         <PaginationItem>
           <PaginationPrevious
+            size=""
             href="#"
             onClick={(e) => {
               e.preventDefault();
@@ -130,6 +129,7 @@ const CustomPagination: React.FC<PaginationProps> = ({
         <PaginationItem>
           <PaginationNext
             href="#"
+            size=""
             onClick={(e) => {
               e.preventDefault();
               handlePageChange(currentPage + 1);

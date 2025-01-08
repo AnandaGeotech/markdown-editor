@@ -1,15 +1,15 @@
-import { IMarkdownJsonApiDBService } from '../type/markdown.type';
 import {
   addDataToIndexedDB,
   deleteDataFromIndexedDB,
   getAllDataFromIndexedDB,
   getDataFromIndexedDBById,
-  IQueryFile,
 } from '@/lib/db';
-import { FileInfo, IFileListRes } from '@/types/file.type';
+import {
+  IFileInfo, IFileListRes, IFileUpsert, IQueryFile,
+} from '@/types/file.type';
 
 // Function to get a single file data by ID
-const getSingleFileDataFn = async (fileId: string): Promise<FileInfo | undefined> => getDataFromIndexedDBById(fileId);
+const getSingleFileDataFn = async (fileId: string): Promise<IFileInfo | undefined> => getDataFromIndexedDBById(fileId);
 
 // Function to get all data from IndexedDB
 const getAllDataFromDBFn = async (props: IQueryFile): Promise<IFileListRes> => getAllDataFromIndexedDB(props);
@@ -17,9 +17,9 @@ const getAllDataFromDBFn = async (props: IQueryFile): Promise<IFileListRes> => g
 const deleteDataFromDBFn = async (id: string) => deleteDataFromIndexedDB(id);
 
 // Function to upsert (add or update) data in IndexedDB
-const upsertDataToDBFn = async (payload: FileInfo) => addDataToIndexedDB(payload);
+const upsertDataToDBFn = async (payload:IFileUpsert) => addDataToIndexedDB(payload);
 
-const markdownIndexedDBService : IMarkdownJsonApiDBService = {
+const markdownIndexedDBService = {
   getSingleFileDataFn,
   getAllDataFromDBFn,
   deleteDataFromDBFn,

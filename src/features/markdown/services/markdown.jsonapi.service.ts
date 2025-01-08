@@ -1,16 +1,16 @@
-import { IMarkdownJsonApiDBService } from '../type/markdown.type';
 import {
   addDataToApiServer,
   deleteDataFromApiServerById,
   getAllDataFromApiServer,
   getDataFromApiServerById,
-  IQueryFile,
   patchDataInApiServerById,
 } from '@/lib/db';
-import { FileInfo, IFileListRes } from '@/types/file.type';
+import {
+  IFileInfo, IFileListRes, IFileUpsert, IQueryFile,
+} from '@/types/file.type';
 
 // Function to get a single file data by ID
-const getSingleFileDataFn = async (fileId: string): Promise<FileInfo | undefined> => getDataFromApiServerById(fileId);
+const getSingleFileDataFn = async (fileId: string): Promise<IFileInfo | undefined> => getDataFromApiServerById(fileId);
 
 // Function to get all data from JsonApiDB
 const getAllDataFromDBFn = async (props:IQueryFile): Promise<IFileListRes> => getAllDataFromApiServer(props);
@@ -19,7 +19,7 @@ const getAllDataFromDBFn = async (props:IQueryFile): Promise<IFileListRes> => ge
 const deleteDataFromDBFn = async (id: string) => deleteDataFromApiServerById(id);
 
 // Function to upsert (add or update) data in JsonApiDB
-const upsertDataToDBFn = async (payload: FileInfo) => {
+const upsertDataToDBFn = async (payload: IFileUpsert) => {
   if (payload.id) {
     return patchDataInApiServerById(payload.id, payload);
   }
@@ -27,7 +27,7 @@ const upsertDataToDBFn = async (payload: FileInfo) => {
   return data;
 };
 
-const markdownJsonApiDBService : IMarkdownJsonApiDBService = {
+const markdownJsonApiDBService = {
   getSingleFileDataFn,
   getAllDataFromDBFn,
   deleteDataFromDBFn,

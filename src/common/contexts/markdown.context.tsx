@@ -1,87 +1,26 @@
 import {
-  createContext, Dispatch,
+  createContext,
   FC,
-  ReactNode,
-  SetStateAction,
   useContext,
   useMemo,
   useState,
 } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useToast } from '@/common/hooks/use-toast';
-import markdownService from '@/features/markdown/services/markdown.service';
-import { SELECTED_SERVICE_TYPE } from '@/features/markdown/constant/markdown.contant';
-import { FileInfo } from '@/types/file.type';
+import markdownService, { validateMarkdownFn } from '@/features/markdown/services/markdown.service';
+import { IMarkdownContextProps, IMarkdownProviderProps, TMarkdownError } from '@/features/markdown/type/markdown.type';
 
-type MarkdownError = {
-  line: number;
-  message: string;
-};
+const serviceMethods = markdownService();
 
-const { upsertDataToDBFn } = markdownService(SELECTED_SERVICE_TYPE);
+const MarkdownContext = createContext<IMarkdownContextProps | undefined>(undefined);
 
-interface ItemContextProps {
-  toggleInput: boolean;
-  setToglleInput: Dispatch<SetStateAction<boolean>>;
-  fileName: string;
-  setfileName: Dispatch<SetStateAction<string>>;
-  handleFileUpsertFn: (
-    // eslint-disable-next-line no-unused-vars
-    data: Partial<FileInfo> & { fileId?: string }
-  ) => Promise<void>;
-  textFile: string;
-  settextFile: Dispatch<SetStateAction<string>>;
-  customErrors: MarkdownError[];
-  setcustomErrors: Dispatch<SetStateAction<MarkdownError[]>>;
-}
-
-const ItemContext = createContext<ItemContextProps | undefined>(undefined);
-
-interface ItemProviderProps {
-  children: ReactNode;
-}
-
-export const validateMarkdown = (text: string): MarkdownError[] => {
-  const errors: MarkdownError[] = [];
-
-  // Split into lines for processing
-  const lines = text.split('\n');
-
-  lines.forEach((line, index) => {
-    // Check for header spacing (e.g., `#Header` should be `# Header`)
-    if (/^(#{1,6})([^\s#].*)$/.test(line)) {
-      errors.push({
-        line: index + 1,
-        message: 'Missing space between "#" and text in header.',
-      });
-    }
-
-    // Check for blockquote spacing (e.g., `>blockquote` should be `> blockquote`)
-    if (/^>([^\s>].*)$/.test(line)) {
-      errors.push({
-        line: index + 1,
-        message: 'Missing space between ">" and text in blockquote.',
-      });
-    }
-
-    // Check for fenced code block indentation or text after backticks
-    if (/^```.*[^`].*$/.test(line)) {
-      errors.push({
-        line: index + 1,
-        message: 'Fenced code block syntax error: no text should follow the opening backticks.',
-      });
-    }
-  });
-
-  return errors;
-};
-export const ItemProvider: FC<ItemProviderProps> = ({ children }) => {
+export const MarkdownProvider: FC<IMarkdownProviderProps> = ({ children }) => {
   const [textFile, settextFile] = useState('# Welcome to Markdown');
   const { toast } = useToast();
 
   const [toggleInput, setToglleInput] = useState(true);
   const [fileName, setfileName] = useState('');
-  const [customErrors, setcustomErrors] = useState<MarkdownError[]>([]);
+  const [customErrors, setcustomErrors] = useState<TMarkdownError[]>([]);
 
   const navigate = useNavigate();
 
@@ -103,7 +42,7 @@ export const ItemProvider: FC<ItemProviderProps> = ({ children }) => {
       return;
     }
 
-    const customErrorss = validateMarkdown(textFile);
+    const customErrorss = validateMarkdownFn(textFile);
     if (customErrorss && customErrorss.length > 0) {
       let linesOfError = '';
       let messages = '';
@@ -124,7 +63,7 @@ export const ItemProvider: FC<ItemProviderProps> = ({ children }) => {
     }
 
     try {
-      const resData = await upsertDataToDBFn({
+      const resData = await serviceMethods.upsertDataToDBFn({
         name: fileName,
         textFile,
         ...(fileId ? { id: fileId } : {}),
@@ -153,20 +92,21 @@ export const ItemProvider: FC<ItemProviderProps> = ({ children }) => {
     settextFile,
     customErrors,
     setcustomErrors,
+    serviceMethods,
   }), [toggleInput, fileName, textFile]);
 
   return (
-    <ItemContext.Provider value={value}>
+    <MarkdownContext.Provider value={value}>
       {children}
-    </ItemContext.Provider>
+    </MarkdownContext.Provider>
   );
 };
 
 // Custom hook for consuming the context
-export const useItemContext = (): ItemContextProps => {
-  const context = useContext(ItemContext);
+export const useMarkdownContext = (): IMarkdownContextProps => {
+  const context = useContext(MarkdownContext);
   if (!context) {
-    throw new Error('useItemContext must be used within an ItemProvider');
+    throw new Error('useMarkdownContext must be used within an MarkdownProvider');
   }
   return context;
 };

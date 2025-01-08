@@ -1,12 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
-import { SELECTED_SERVICE_TYPE } from '../constant/markdown.contant';
-import { useItemContext, validateMarkdown } from '@/common/contexts/markdown.context';
+import { useMarkdownContext } from '@/common/contexts/markdown.context';
 import { useToast } from '@/common/hooks/use-toast';
-
-import markdownService from '@/features/markdown/services/markdown.service';
-
-const { getSingleFileDataFn } = markdownService(SELECTED_SERVICE_TYPE);
 
 const useMarkdownUpsert = () => {
   const navigate = useNavigate();
@@ -15,12 +10,12 @@ const useMarkdownUpsert = () => {
   const { toast } = useToast();
   const {
     setToglleInput, settextFile, setfileName,
-    customErrors, setcustomErrors,
-  } = useItemContext();
+    serviceMethods,
+  } = useMarkdownContext();
 
   async function getFileDataFn(fileId:string) {
     try {
-      const data = await getSingleFileDataFn(fileId);
+      const data = await serviceMethods.getSingleFileDataFn(fileId);
       if (!data || !data.id) {
         toast({
           title: 'File not found!',
@@ -63,7 +58,6 @@ const useMarkdownUpsert = () => {
     showMobileEditor,
     setshowMobileEditor,
     isFileNotFound,
-    validateMarkdown,
     handleChangeMarkdownFn,
   };
 };
