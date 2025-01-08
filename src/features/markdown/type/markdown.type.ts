@@ -53,10 +53,4 @@ export type TTableFileListProps = Omit<IGlobalTableProps<IFileInfo>, 'dataList'>
     read: () => IFileListRes;
   } | null;
 }
-// export interface ITableFileListProps extends IGlobalTableProps<IFileInfo>{
-//   handlePageChange: (page: number) => void;
-//     currentPage: number;
-//   dataResource: {
-//     read: () => IFileListRes;
-//   } | null;
-//   }
+

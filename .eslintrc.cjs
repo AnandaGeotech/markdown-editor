@@ -123,7 +123,7 @@ module.exports = {
             from: ['scss'],
             allow: ['scss', 'assets'],
           },
-        ],
+        ]
       },
     ],
   },
