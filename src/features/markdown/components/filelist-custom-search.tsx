@@ -1,13 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { FileIcon, Mic, SearchIcon } from 'lucide-react';
-import { Button } from './button';
+import {
+  AudioLines, FileIcon, Mic, SearchIcon,
+} from 'lucide-react';
+import { Button } from '../../../common/components/button';
+import { ISearchFormProps } from '@/types/common.type';
 
-interface SearchFormProps {
-  onSearch: (query: string) => void;
-  searchQuery:string;
-}
-
-const CustomSearchForm: React.FC<SearchFormProps> = ({ onSearch, searchQuery }) => {
+const FileListCustomSearchForm: React.FC<ISearchFormProps> = ({ onSearch, searchQuery }) => {
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     onSearch(e.target.value);
   };
@@ -42,6 +40,7 @@ const CustomSearchForm: React.FC<SearchFormProps> = ({ onSearch, searchQuery }) 
         }
         setFinalText(final);
         setInterimText(interim);
+        onSearch(final);
       };
 
       recognitionInstance.onend = () => {
@@ -63,6 +62,7 @@ const CustomSearchForm: React.FC<SearchFormProps> = ({ onSearch, searchQuery }) 
         recognition.start();
         setRecognizing(true);
         setFinalText('');
+        onSearch('');
         setInterimText('');
       }
     }
@@ -73,21 +73,11 @@ const CustomSearchForm: React.FC<SearchFormProps> = ({ onSearch, searchQuery }) 
       onSubmit={handleFormSubmit}
       className="flex items-center max-w-lg mx-auto"
     >
-      {/* <div>
-        <button onClick={toggleStartStop}>
-          {recognizing ? 'Click to Stop' : 'Click to Speak'}
-        </button>
-        <div style={{ border: 'dotted', padding: '10px' }}>
-          <span id="final_span">{finalText}</span>
-          <span id="interim_span" style={{ color: 'grey' }}>
-            {interimText}
-          </span>
-        </div>
-      </div> */}
-      <label htmlFor="voice-search" className="sr-only">
+
+      <label className="sr-only">
         Search
       </label>
-      <div className="relative w-[600px]">
+      <div className="relative md:w-[600px]">
         <div className="absolute inset-y-0 start-0 flex items-center px-3 pointer-events-none">
           <FileIcon />
         </div>
@@ -104,17 +94,16 @@ const CustomSearchForm: React.FC<SearchFormProps> = ({ onSearch, searchQuery }) 
         <button
           type="button"
           className="absolute inset-y-0 end-0 flex items-center pe-3"
-          onClick={() => {
-
-          }}
+          onClick={toggleStartStop}
         >
-          <Mic />
+          {!recognizing ? <Mic />
+            : <AudioLines />}
 
         </button>
       </div>
       <Button
         className="mx-3 flex
-              bg-[#e16841]
+              bg-custom-primary
                  hover:bg-orange-600 text-white font-medium py-5 px-4 rounded"
       >
         <SearchIcon />
@@ -124,4 +113,4 @@ const CustomSearchForm: React.FC<SearchFormProps> = ({ onSearch, searchQuery }) 
   );
 };
 
-export default CustomSearchForm;
+export default FileListCustomSearchForm;

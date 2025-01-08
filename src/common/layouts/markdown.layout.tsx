@@ -1,14 +1,14 @@
 import React from 'react';
 import { Outlet } from 'react-router-dom';
-import { ItemProvider } from '../contexts/markdown.context';
+import { MarkdownProvider } from '../contexts/markdown.context';
 import MarkdownHeader from '@/features/markdown/components/header';
 
 const MarkdownLayout = () => (
-  <ItemProvider>
+  <MarkdownProvider>
 
     <MarkdownHeader />
     <Outlet />
-  </ItemProvider>
+  </MarkdownProvider>
 );
 
 export default MarkdownLayout;

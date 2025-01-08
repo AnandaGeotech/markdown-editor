@@ -1,14 +1,8 @@
 import { TriangleAlert, X } from 'lucide-react';
 import { FC, useEffect, useRef } from 'react';
+import { IConfirmModalProps } from '@/types/modal.type';
 
-interface ConfirmModalProps {
-  isOpen: boolean;
-  closeModal: () => void;
-  handleSubmitFn: () => void;
-  name: string;
-}
-
-export const ConfirmModal: FC<ConfirmModalProps> = ({
+export const ConfirmModal: FC<IConfirmModalProps> = ({
   isOpen,
   closeModal,
   handleSubmitFn,
@@ -63,7 +57,7 @@ export const ConfirmModal: FC<ConfirmModalProps> = ({
             <button
               onClick={handleSubmitFn}
               type="button"
-              className="bg-[#e16841] hover:bg-orange-600 text-white font-medium py-2 px-4 rounded"
+              className="bg-custom-primary  hover:bg-orange-600 text-white font-medium py-2 px-4 rounded"
             >
               Yes, I&rsquo;m sure
             </button>

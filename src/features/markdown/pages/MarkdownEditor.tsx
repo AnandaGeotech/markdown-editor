@@ -1,8 +1,8 @@
 import { EyeIcon, EyeOff } from 'lucide-react';
 import { FC } from 'react';
 
-import { useItemContext } from '../../../common/contexts/markdown.context';
-import useMarkdownUpsert from '../hooks/markdown.upsert';
+import { useMarkdownContext } from '../../../common/contexts/markdown.context';
+import useMarkdownUpsert from '../hooks/useMarkdown.upsert';
 import MarkdownPreview from '../components/markdown.preview';
 import CopyOption from '../components/copy.option';
 import { COPY_TYPE_HTML, COPY_TYPE_MARKDOWN } from '../constant/markdown.contant';
@@ -13,7 +13,7 @@ import {
 } from '@/common/components/resizable';
 
 const MarkdownEditor: FC = () => {
-  const { textFile } = useItemContext();
+  const { textFile } = useMarkdownContext();
 
   const {
     showMobileEditor, setshowMobileEditor, isFileNotFound,
@@ -23,12 +23,12 @@ const MarkdownEditor: FC = () => {
   const PreviewEyeIcon = !showMobileEditor ? EyeIcon : EyeOff;
 
   return (
-    <div className="flex flex-grow bg-[#1e1f23] h-[calc(100vh-80px)]">
+    <div className="flex flex-grow bg-custom-dark3 h-[calc(100vh-80px)]">
       <ResizablePanelGroup direction="horizontal" className="flex-grow">
         <ResizablePanel className="hidden md:block">
           <div className="h-full flex flex-col overflow-hidden">
             <div className="p-4 flex justify-between">
-              <h1 className="tracking-widest text-xl font-medium text-[#c8c9ce] ">
+              <h1 className="tracking-widest text-xl font-medium text-custom-text3 ">
                 MARKDOWN
 
               </h1>
@@ -43,7 +43,7 @@ const MarkdownEditor: FC = () => {
                   <CopyOption textFile={textFile} name={COPY_TYPE_MARKDOWN} />
                   <PreviewEyeIcon
                     onClick={() => setshowMobileEditor((prev) => !prev)}
-                    className="cursor-pointer text-[#c8c9ce]"
+                    className="cursor-pointer text-custom-text3"
                   />
                 </div>
 
@@ -53,7 +53,7 @@ const MarkdownEditor: FC = () => {
 
               <textarea
                 disabled={isFileNotFound}
-                className="p-4 w-full h-[99%] bg-black text-[#c0c1c6] focus:outline-none resize-none overflow-auto scrollbar-none"
+                className="p-4 w-full h-[99%] bg-black text-custom-text2 focus:outline-none resize-none overflow-auto scrollbar-none"
                 value={textFile}
                 onChange={handleChangeMarkdownFn}
               />
@@ -66,7 +66,7 @@ const MarkdownEditor: FC = () => {
         <ResizablePanel className="md:hidden block">
           <div className="h-full flex flex-col overflow-hidden">
             <div className="p-4 flex justify-between">
-              <h1 className="tracking-widest text-xl font-medium text-[#c8c9ce] ">
+              <h1 className="tracking-widest text-xl font-medium text-custom-text3 ">
                 {showMobileEditor ? 'MARKDOWN' : 'PREVIEW'}
 
               </h1>
@@ -80,7 +80,7 @@ const MarkdownEditor: FC = () => {
                     <CopyOption textFile={textFile} name={COPY_TYPE_HTML} />
                     <PreviewEyeIcon
                       onClick={() => setshowMobileEditor((prev) => !prev)}
-                      className="cursor-pointer text-[#c8c9ce]"
+                      className="cursor-pointer text-custom-text3"
                     />
                   </div>
                 ) : (
@@ -89,7 +89,7 @@ const MarkdownEditor: FC = () => {
                     <CopyOption textFile={textFile} name={COPY_TYPE_MARKDOWN} />
                     <PreviewEyeIcon
                       onClick={() => setshowMobileEditor((prev) => !prev)}
-                      className="cursor-pointer text-[#c8c9ce]"
+                      className="cursor-pointer text-custom-text3"
                     />
                   </div>
                 )}
@@ -102,7 +102,7 @@ const MarkdownEditor: FC = () => {
               ) : (
                 <textarea
                   disabled={isFileNotFound}
-                  className="p-4 w-full h-[99%] bg-black text-[#c0c1c6] focus:outline-none resize-none overflow-auto scrollbar-none"
+                  className="p-4 w-full h-[99%] bg-black text-custom-text2 focus:outline-none resize-none overflow-auto scrollbar-none"
                   value={textFile}
                   onChange={handleChangeMarkdownFn}
                 />
@@ -115,7 +115,7 @@ const MarkdownEditor: FC = () => {
         <ResizablePanel className="hidden md:block">
           <div className="h-full">
             <div className="flex items-center justify-between pr-4">
-              <h1 className="p-4 text-xl tracking-widest font-medium text-[#c8c9ce]">
+              <h1 className="p-4 text-xl tracking-widest font-medium text-custom-text3">
                 PREVIEW
               </h1>
               <CopyOption textFile={textFile} name={COPY_TYPE_HTML} />
