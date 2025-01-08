@@ -5,7 +5,7 @@ import { FILE_TABLE_HEADER_LIST } from '../constant/markdown.contant';
 import { ConfirmModal } from '@/common/components/confirm-modal';
 import Header from '@/common/components/header';
 import TableSkeleton from '@/common/components/table-skeleton';
-import FileListCustomSearchForm from '@/features/markdown/components/filelist-custom-search';
+import FilelistCustomSearch from '@/features/markdown/components/filelist-custom-search';
 
 const MarkdownList: FC = () => {
   const {
@@ -30,7 +30,10 @@ const MarkdownList: FC = () => {
       <div className="relative overflow-x-auto  py-10 px-4">
         <div className="flex items-center justify-between flex-column flex-wrap md:flex-row space-y-4 md:space-y-0 pb-4 ">
 
-          <FileListCustomSearchForm onSearch={handleSearch} searchQuery={searchTerm} />
+          <FilelistCustomSearch
+            searchQuery={searchTerm}
+            onSearch={handleSearch}
+          />
         </div>
         <Suspense fallback={<TableSkeleton />}>
 

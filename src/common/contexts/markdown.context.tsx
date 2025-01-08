@@ -7,8 +7,9 @@ import {
 } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useToast } from '@/common/hooks/use-toast';
-import markdownService, { validateMarkdownFn } from '@/features/markdown/services/markdown.service';
+import markdownService from '@/features/markdown/services/markdown.service';
 import { IMarkdownContextProps, IMarkdownProviderProps, TMarkdownError } from '@/features/markdown/type/markdown.type';
+import { validateMarkdownFn } from '@/features/markdown/validations/file-create-validation';
 
 const serviceMethods = markdownService();
 

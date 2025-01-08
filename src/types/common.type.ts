@@ -7,8 +7,10 @@ import { ACTION_TYPES } from '@/common/constants/common.constant';
 import { buttonVariants } from '@/common/components/button';
 
 export interface ISearchFormProps {
+    children?:React.ReactNode
   onSearch: (query: string) => void;
   searchQuery: string;
+  formLabel?:string
 }
 
 export interface ITableActions<T> {
