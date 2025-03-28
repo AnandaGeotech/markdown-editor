@@ -9,10 +9,7 @@ jobs:
     steps:
       - name: Print a Message
         run: echo "Hello from my first GitHub Action"
-      - name: Checing Machine Configurations
-        run: |
-         git -versions
-         node -v
+     
       - name: Coping the codes
         uses: actions/checkout@v4
       - name: Install Dependecy
