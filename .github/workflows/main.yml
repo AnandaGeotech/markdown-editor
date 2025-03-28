@@ -14,4 +14,9 @@ jobs:
         uses: actions/checkout@v4
       - name: Install Dependecy
         run: npm install
-   
+      - name: Checking Linting
+        run: echo "Linting checking....."
+      - name: Checking Linting
+        run: npm run lint
+      - name: Try to  Build
+        run: npm run build
