@@ -1,12 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
-import { DB_TYPE_NAME } from '../constant/markdown.contant';
-import { useItemContext } from '@/common/contexts/markdown.context';
+import { useMarkdownContext } from '@/common/contexts/markdown.context';
 import { useToast } from '@/common/hooks/use-toast';
-
-import markdownService from '@/features/markdown/services/markdown.service';
-
-const { getSingleFileDataFn } = markdownService(DB_TYPE_NAME);
 
 const useMarkdownUpsert = () => {
   const navigate = useNavigate();
@@ -14,11 +9,13 @@ const useMarkdownUpsert = () => {
   const { id: editFileId } = useParams();
   const { toast } = useToast();
   const {
-    setToglleInput, fileName, textFile, settextFile, setfileName,
-  } = useItemContext();
+    setToglleInput, settextFile, setfileName,
+    serviceMethods,
+  } = useMarkdownContext();
+
   async function getFileDataFn(fileId:string) {
     try {
-      const data = await getSingleFileDataFn(fileId);
+      const data = await serviceMethods.getSingleFileDataFn(fileId);
       if (!data || !data.id) {
         toast({
           title: 'File not found!',
@@ -48,14 +45,20 @@ const useMarkdownUpsert = () => {
   }, [editFileId, setToglleInput, setfileName, settextFile]);
 
   const [showMobileEditor, setshowMobileEditor] = useState(true);
-  const [isCopy, setisCopy] = useState(false);
+
   const isFileNotFound = search.includes('file-not-found');
+  function handleChangeMarkdownFn(e: React.ChangeEvent<HTMLTextAreaElement>) {
+    // setcustomErrors({});
+    settextFile(e.target.value);
+    // const errors = validateMarkdown(e.target.value);
+    // setcustomErrors(errors);
+  }
 
   return {
     showMobileEditor,
-    isCopy,
     setshowMobileEditor,
     isFileNotFound,
+    handleChangeMarkdownFn,
   };
 };
 

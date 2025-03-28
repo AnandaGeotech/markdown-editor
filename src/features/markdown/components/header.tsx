@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/no-autofocus */
 import {
   File, FileChartColumn,
   Menu,
@@ -9,12 +10,8 @@ import {
 } from 'react-router-dom';
 import { Button } from '@/common/components/button';
 import { useToast } from '@/common/hooks/use-toast';
-import { DB_TYPE_NAME } from '@/features/markdown/constant/markdown.contant';
-import markdownService from '@/features/markdown/services/markdown.service';
-import { useItemContext } from '@/common/contexts/markdown.context';
+import { useMarkdownContext } from '@/common/contexts/markdown.context';
 import { ConfirmModal } from '@/common/components/confirm-modal';
-
-const { deleteDataFromDBFn } = markdownService(DB_TYPE_NAME);
 
 export default function MarkdownHeader() {
   const { id: editFileId } = useParams();
@@ -28,7 +25,8 @@ export default function MarkdownHeader() {
     setfileName,
     toggleInput,
     setToglleInput,
-  } = useItemContext();
+    serviceMethods,
+  } = useMarkdownContext();
   const { toast } = useToast();
 
   const [showOptionSection, setshowOptionSection] = useState(false);
@@ -43,11 +41,11 @@ export default function MarkdownHeader() {
 
   const [isOpen, setIsOpen] = useState(false);
 
-  const openModal = () => setIsOpen(true);
+  const openModalFn = () => setIsOpen(true);
   const closeModal = () => setIsOpen(false);
 
   const handleDelete = async (id: string) => {
-    await deleteDataFromDBFn(id);
+    await serviceMethods.deleteDataFromDBFn(id);
     closeModal();
     toast({
       title: 'File deleted successfully!',
@@ -62,28 +60,32 @@ export default function MarkdownHeader() {
 
   return (
     <>
-      <header className="h-[80px] relative bg-[#2c2d31] text-white p-4 flex justify-between items-center">
+      <header className="h-[80px] relative bg-custom-dark1 text-white p-4 flex justify-between items-center">
 
         <div className="text-xl  font-bold flex gap-1 md:gap-4 items-center">
-          <div className="w-[60px] h-[80px] bg-[#35383f] flex items-center justify-center text-9xl absolute top-0 left-0 bottom-0">
-            <Link to="/" className="text-[#f2f3f7]">
+          <div className="w-[60px] h-[80px] bg-custom-dark2 flex items-center justify-center text-9xl absolute top-0 left-0 bottom-0">
+            <Link to="/" className="text-custom-light1">
               <Menu />
             </Link>
           </div>
           {showOptionSection && (
             <div className="ml-16 flex gap-3 items-center">
               {' '}
-              <File className="text-[#feffff]" />
+              <File className="text-custom-light2" />
               <div className="">
-                <p className="text-sm hidden md:block text-[#6f7075]">
+                <p className="text-sm hidden md:block text-custom-dark4">
                   Document name
                 </p>
                 <div className="flex items-center gap-1">
                   {toggleInput ? (
                     <p
-                      onDoubleClick={() => setToglleInput(false)}
-                      onTouchEnd={() => setToglleInput(false)}
-                      className="text-sm text-[#f2f3f7]"
+                      onDoubleClick={() => {
+                        setToglleInput(false);
+                      }}
+                      onTouchEnd={() => {
+                        setToglleInput(false);
+                      }}
+                      className="text-sm text-custom-light1"
                     >
                       {fileName}
                       .md
@@ -95,6 +97,7 @@ export default function MarkdownHeader() {
                       onChange={(e) => setfileName(e.target.value.trim())}
                       type="text"
                       className="block w-full p-2 text-gray-900 border border-gray-300 rounded-lg bg-gray-50 text-xs focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                      autoFocus
                     />
                   )}
 
@@ -109,15 +112,15 @@ export default function MarkdownHeader() {
               {pathname.includes('/markdown/markdown-edit') && (
               <Trash2Icon
                 onClick={() => {
-                  openModal();
+                  openModalFn();
                 }}
-                className="cursor-pointer text-[#7a7d82]"
+                className="cursor-pointer text-custom-text3"
               />
               )}
               <Button
                 onClick={() => handleFileUpsertFn({ fileId: editFileId })}
                 className="
-                  bg-[#e16841]
+                  bg-custom-primary
                    hover:bg-orange-600 text-white font-medium py-2 px-4 rounded"
               >
                 <FileChartColumn />
@@ -133,6 +136,7 @@ export default function MarkdownHeader() {
         name={fileName}
         isOpen={isOpen}
         closeModal={closeModal}
+        // eslint-disable-next-line react/jsx-no-bind
         handleSubmitFn={handleSubmitFn}
         key="header"
       />

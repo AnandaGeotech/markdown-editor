@@ -1,31 +1,17 @@
+/* eslint-disable no-unused-vars */
 import { CopyCheck, CopyIcon } from 'lucide-react';
 import { FC, useState } from 'react';
-import MarkdownIt from 'markdown-it';
-import { COPY_TYPE_HTML } from '../constant/markdown.contant';
+import { ICopyOptionProps } from '../type/markdown.type';
+import { handleCopyFn } from '../utils/copy-file';
 import { toast } from '@/common/hooks/use-toast';
-import { useItemContext } from '@/common/contexts/markdown.context';
+import { useMarkdownContext } from '@/common/contexts/markdown.context';
 
-const md = new MarkdownIt();
-// Props interface for the component
-interface CopyOptionProps {
-    textFile: string;
-    name:string
-}
-
-const CopyOption: FC<CopyOptionProps> = ({ textFile, name }) => {
-  const { fileName } = useItemContext();
+const CopyOption: FC<ICopyOptionProps> = ({ textFile, name }) => {
+  const { fileName } = useMarkdownContext();
   const [isCopy, setisCopy] = useState(false);
-  const handleCopyFn = () => {
-    if (name === COPY_TYPE_HTML) {
-      const renderedHTML = md.render(textFile);
-      return navigator.clipboard.writeText(renderedHTML);
-    }
-
-    return navigator.clipboard.writeText(textFile);
-  };
 
   const handleCopy = () => {
-    handleCopyFn()
+    handleCopyFn({ textFile, name })
       .then(() => {
         toast({ title: `${fileName}.md file is copied successfully!` });
         setisCopy(true);

@@ -1,27 +1,11 @@
-// Inspired by react-hot-toast library
+/* eslint-disable no-unused-vars */
 import * as React from 'react';
-
-import type {
-  ToastActionElement,
-  ToastProps,
-} from '@/components/ui/toast';
+import {
+  IAction, IState, Toast, ToasterToast,
+} from '@/types/common.type';
 
 const TOAST_LIMIT = 1;
 const TOAST_REMOVE_DELAY = 1000000;
-
-type ToasterToast = ToastProps & {
-  id: string
-  title?: React.ReactNode
-  description?: React.ReactNode
-  action?: ToastActionElement
-}
-
-const actionTypes = {
-  ADD_TOAST: 'ADD_TOAST',
-  UPDATE_TOAST: 'UPDATE_TOAST',
-  DISMISS_TOAST: 'DISMISS_TOAST',
-  REMOVE_TOAST: 'REMOVE_TOAST',
-} as const;
 
 let count = 0;
 
@@ -30,31 +14,18 @@ function genId() {
   return count.toString();
 }
 
-type ActionType = typeof actionTypes
-
-type Action =
-  | {
-      type: ActionType['ADD_TOAST']
-      toast: ToasterToast
-    }
-  | {
-      type: ActionType['UPDATE_TOAST']
-      toast: Partial<ToasterToast>
-    }
-  | {
-      type: ActionType['DISMISS_TOAST']
-      toastId?: ToasterToast['id']
-    }
-  | {
-      type: ActionType['REMOVE_TOAST']
-      toastId?: ToasterToast['id']
-    }
-
-interface State {
-  toasts: ToasterToast[]
-}
-
 const toastTimeouts = new Map<string, ReturnType<typeof setTimeout>>();
+
+const listeners: Array<(state: IState) => void> = [];
+
+let memoryState: IState = { toasts: [] };
+
+function dispatch(action: IAction) {
+  memoryState = reducer(memoryState, action);
+  listeners.forEach((listener) => {
+    listener(memoryState);
+  });
+}
 
 const addToRemoveQueue = (toastId: string) => {
   if (toastTimeouts.has(toastId)) {
@@ -72,7 +43,7 @@ const addToRemoveQueue = (toastId: string) => {
   toastTimeouts.set(toastId, timeout);
 };
 
-export const reducer = (state: State, action: Action): State => {
+export const reducer = (state: IState, action: IAction): IState => {
   switch (action.type) {
     case 'ADD_TOAST':
       return {
@@ -89,8 +60,6 @@ export const reducer = (state: State, action: Action): State => {
     case 'DISMISS_TOAST': {
       const { toastId } = action;
 
-      // ! Side effects ! - This could be extracted into a dismissToast() action,
-      // but I'll keep it here for simplicity
       if (toastId) {
         addToRemoveQueue(toastId);
       } else {
@@ -109,6 +78,7 @@ export const reducer = (state: State, action: Action): State => {
           : t)),
       };
     }
+
     case 'REMOVE_TOAST':
       if (action.toastId === undefined) {
         return {
@@ -120,21 +90,11 @@ export const reducer = (state: State, action: Action): State => {
         ...state,
         toasts: state.toasts.filter((t) => t.id !== action.toastId),
       };
+
+    default:
+      return state;
   }
 };
-
-const listeners: Array<(state: State) => void> = [];
-
-let memoryState: State = { toasts: [] };
-
-function dispatch(action: Action) {
-  memoryState = reducer(memoryState, action);
-  listeners.forEach((listener) => {
-    listener(memoryState);
-  });
-}
-
-type Toast = Omit<ToasterToast, 'id'>
 
 function toast({ ...props }: Toast) {
   const id = genId();
@@ -143,6 +103,7 @@ function toast({ ...props }: Toast) {
     type: 'UPDATE_TOAST',
     toast: { ...props, id },
   });
+
   const dismiss = () => dispatch({ type: 'DISMISS_TOAST', toastId: id });
 
   dispatch({
@@ -165,7 +126,7 @@ function toast({ ...props }: Toast) {
 }
 
 function useToast() {
-  const [state, setState] = React.useState<State>(memoryState);
+  const [state, setState] = React.useState<IState>(memoryState);
 
   React.useEffect(() => {
     listeners.push(setState);

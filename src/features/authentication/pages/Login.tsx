@@ -1,1 +1,1 @@
-export const Component = () => <div>This is login page</div>;
+export const Component = () => <div>This is login page Updated Github Actions</div>;

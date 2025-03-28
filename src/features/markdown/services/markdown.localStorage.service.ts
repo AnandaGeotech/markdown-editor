@@ -4,13 +4,13 @@ import {
   getAllDataFromLocalStorage,
   getDataFromLocalStorageById,
 } from '@/lib/db';
-import { FileInfo } from '@/types/file.type';
+import { IFileInfo, IFileListRes, IFileUpsert } from '@/types/file.type';
 
-async function getSingleFileDataFn(fileId: string): Promise<FileInfo | undefined> {
+async function getSingleFileDataFn(fileId: string): Promise<IFileInfo | undefined> {
   return getDataFromLocalStorageById(fileId);
 }
 
-async function getAllDataFromDBFn(): Promise<FileInfo[]> {
+async function getAllDataFromDBFn(): Promise<IFileListRes > {
   return getAllDataFromLocalStorage();
 }
 
@@ -18,7 +18,7 @@ async function deleteDataFromDBFn(id: string) {
   return deleteDataFromLocalStorage(id);
 }
 
-async function upsertDataToDBFn(payload: FileInfo) {
+async function upsertDataToDBFn(payload: IFileUpsert) {
   return addDataToLocalStorage(payload);
 }
 const markdownLocalStorageService = {

@@ -1,8 +1,6 @@
 import {
-  createContext, Dispatch,
+  createContext,
   FC,
-  ReactNode,
-  SetStateAction,
   useContext,
   useMemo,
   useState,
@@ -10,41 +8,20 @@ import {
 import { useNavigate } from 'react-router-dom';
 import { useToast } from '@/common/hooks/use-toast';
 import markdownService from '@/features/markdown/services/markdown.service';
-import { DB_TYPE_NAME } from '@/features/markdown/constant/markdown.contant';
+import { IMarkdownContextProps, IMarkdownProviderProps, TMarkdownError } from '@/features/markdown/type/markdown.type';
+import { validateMarkdownFn } from '@/features/markdown/validations/file-create-validation';
 
-const { upsertDataToDBFn } = markdownService(DB_TYPE_NAME);
+const serviceMethods = markdownService();
 
-interface Item {
-  id: number;
-  name: string;
-  textFile: string;
-}
+const MarkdownContext = createContext<IMarkdownContextProps | undefined>(undefined);
 
-interface ItemContextProps {
-  toggleInput: boolean;
-  setToglleInput: Dispatch<SetStateAction<boolean>>;
-  fileName: string;
-  setfileName: Dispatch<SetStateAction<string>>;
-  handleFileUpsertFn: (
-    // eslint-disable-next-line no-unused-vars
-    data: Partial<Item> & { fileId?: string }
-  ) => Promise<void>;
-  textFile: string;
-  settextFile: Dispatch<SetStateAction<string>>;
-}
-
-const ItemContext = createContext<ItemContextProps | undefined>(undefined);
-
-interface ItemProviderProps {
-  children: ReactNode;
-}
-
-export const ItemProvider: FC<ItemProviderProps> = ({ children }) => {
+export const MarkdownProvider: FC<IMarkdownProviderProps> = ({ children }) => {
   const [textFile, settextFile] = useState('# Welcome to Markdown');
   const { toast } = useToast();
 
   const [toggleInput, setToglleInput] = useState(true);
   const [fileName, setfileName] = useState('');
+  const [customErrors, setcustomErrors] = useState<TMarkdownError[]>([]);
 
   const navigate = useNavigate();
 
@@ -66,8 +43,28 @@ export const ItemProvider: FC<ItemProviderProps> = ({ children }) => {
       return;
     }
 
+    const customErrorss = validateMarkdownFn(textFile);
+    if (customErrorss && customErrorss.length > 0) {
+      let linesOfError = '';
+      let messages = '';
+
+      // Use one loop to build both strings
+      for (let i = 0; i < customErrorss.length; i++) {
+        const { line, message } = customErrorss[i];
+        linesOfError += line + (i < customErrorss.length - 1 ? ', ' : '');
+        messages += message + (i < customErrorss.length - 1 ? ' | ' : '');
+      }
+
+      toast({
+        variant: 'destructive',
+        title: `Lines of error:  ${linesOfError}`,
+        description: messages,
+      });
+      return;
+    }
+
     try {
-      const resData = await upsertDataToDBFn({
+      const resData = await serviceMethods.upsertDataToDBFn({
         name: fileName,
         textFile,
         ...(fileId ? { id: fileId } : {}),
@@ -76,7 +73,7 @@ export const ItemProvider: FC<ItemProviderProps> = ({ children }) => {
         title: `File is ${fileId ? 'updated' : 'added'} successfully!`,
       });
 
-      navigate(`/markdown/markdown-edit/${resData}`, { replace: true });
+      navigate(`/markdown/markdown-edit/${resData?.id}`, { replace: true });
     } catch (error: any) {
       toast({
         title: error?.message || 'Something went wrong!',
@@ -94,20 +91,23 @@ export const ItemProvider: FC<ItemProviderProps> = ({ children }) => {
     handleFileUpsertFn,
     textFile,
     settextFile,
+    customErrors,
+    setcustomErrors,
+    serviceMethods,
   }), [toggleInput, fileName, textFile]);
 
   return (
-    <ItemContext.Provider value={value}>
+    <MarkdownContext.Provider value={value}>
       {children}
-    </ItemContext.Provider>
+    </MarkdownContext.Provider>
   );
 };
 
 // Custom hook for consuming the context
-export const useItemContext = (): ItemContextProps => {
-  const context = useContext(ItemContext);
+export const useMarkdownContext = (): IMarkdownContextProps => {
+  const context = useContext(MarkdownContext);
   if (!context) {
-    throw new Error('useItemContext must be used within an ItemProvider');
+    throw new Error('useMarkdownContext must be used within an MarkdownProvider');
   }
   return context;
 };
