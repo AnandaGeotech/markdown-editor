@@ -12,3 +12,7 @@ jobs:
 
       - name: Checking Linting
         run: echo "Linting checking....."
+      - name: Checking Linting
+        run: npm run lint
+      - name: Try to  Build
+        run: npm run build
